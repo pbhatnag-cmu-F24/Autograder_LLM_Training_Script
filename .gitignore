@@ -1,0 +1,4 @@
+# Ignore data folder and its contents
+data/*
+.vscode/launch.json
+.env
