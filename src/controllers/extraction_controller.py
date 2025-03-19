@@ -2,17 +2,14 @@ import sys
 from pathlib import Path
 from flask import Blueprint, request, jsonify, send_file
 
-# Ensure the project root is in sys.path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from src.services.extraction_service import extract_data_from_division
 
-# Hardcoded folders
 SOURCE_FOLDER = "data/file_filtered"
 DEST_FOLDER = "data/divisioned"
 DATASET_FILENAME = "dataset.jsonl"
 
-# Create a blueprint for dataset extraction endpoints
 dataset_extraction_bp = Blueprint("dataset_extraction_bp", __name__)
 
 @dataset_extraction_bp.route("/api/dataset/extraction", methods=["POST"])
@@ -29,6 +26,8 @@ def dataset_extraction_controller():
     division = req_data.get("division")
     if not division:
         return jsonify({"error": "Missing 'division' parameter in request"}), 400
+    
+    Path(DEST_FOLDER).mkdir(parents=True, exist_ok=True)
 
     try:
         dataset_file_path = extract_data_from_division(SOURCE_FOLDER, division, DEST_FOLDER)
@@ -37,7 +36,6 @@ def dataset_extraction_controller():
         if not dataset_file.exists():
             return jsonify({"error": "Dataset file not found"}), 500
 
-        # Return the file as a downloadable response
         return send_file(dataset_file, as_attachment=True, mimetype="application/jsonl")
 
     except Exception as e:
