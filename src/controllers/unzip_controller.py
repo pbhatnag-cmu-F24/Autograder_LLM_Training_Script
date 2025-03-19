@@ -5,7 +5,6 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from src.services.unzip_service import recursive_unzip
 
-# Hardcoded directories
 RAW_DATA_DIR = Path("data/raw")
 UNZIPPED_DATA_DIR = Path("data/unzipped")
 
@@ -31,16 +30,18 @@ def unzip_controller():
     if uploaded_file.filename == "":
         return jsonify({"error": "No file selected"}), 400
 
-    # Clear the raw and unzipped directories
+    if not RAW_DATA_DIR.exists():
+        RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
     clear_directory(RAW_DATA_DIR)
+
+    if not UNZIPPED_DATA_DIR.exists():
+        UNZIPPED_DATA_DIR.mkdir(parents=True, exist_ok=True)
     clear_directory(UNZIPPED_DATA_DIR)
 
-    # Save the uploaded file in RAW_DATA_DIR
     filename = secure_filename(uploaded_file.filename)
     save_path = RAW_DATA_DIR / filename
     uploaded_file.save(str(save_path))
 
-    # Gather all zip files in RAW_DATA_DIR and perform recursive extraction
     zip_files = list(RAW_DATA_DIR.glob("*.zip"))
     if not zip_files:
         return jsonify({"error": "No zip files found in RAW_DATA_DIR"}), 400

@@ -249,7 +249,5 @@ def parse_java_file(file_path):
 
 def parse_cpp_file(file_path):
     """
-    Dummy parser for C++ files. In a real implementation, you might use a specialized C++ parser or tree-sitter.
     """
-    # Placeholder: Replace with actual parsing logic
     return {"methods": ["dummyCppMethod"], "classes": ["dummyCppClass"]}

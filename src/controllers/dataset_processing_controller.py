@@ -2,16 +2,13 @@ import sys
 from pathlib import Path
 from flask import Blueprint, request, jsonify, send_file
 
-# Ensure the project root is in sys.path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from src.services.dataset_processing_service import process_dataset
 
-# Hardcoded Constants
 INPUT_FILE = "data/divisioned/unprocessed_dataset.jsonl"  # Path to the unprocessed dataset
 DESTINATION_FOLDER = "data/processed"  # Folder where the processed dataset will be stored
 
-# Create a blueprint for dataset processing
 dataset_processing_bp = Blueprint("dataset_processing_bp", __name__)
 
 @dataset_processing_bp.route("/api/dataset/process", methods=["POST"])
@@ -49,7 +46,6 @@ def dataset_processing_controller():
         if not processed_file.exists():
             return jsonify({"error": "Processed dataset file not found"}), 500
 
-        # Return the processed file as a downloadable response
         return send_file(processed_file, as_attachment=True, mimetype="application/jsonl")
 
     except Exception as e:

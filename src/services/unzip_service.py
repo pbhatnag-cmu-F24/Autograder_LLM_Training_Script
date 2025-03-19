@@ -64,24 +64,3 @@ def recursive_unzip(zip_files, destination):
 
     return extracted_files
 
-# # Example usage as a script:
-# if __name__ == "__main__":
-#     import argparse
-#     import json
-
-#     parser = argparse.ArgumentParser(
-#         description="Recursively unzip all provided zip files into a destination directory."
-#     )
-#     parser.add_argument(
-#         "--zip-files", nargs="+", required=True,
-#         help="Paths to one or more zip files to extract."
-#     )
-#     parser.add_argument(
-#         "--destination", default="data/extracted",
-#         help="Destination directory for extraction (default: data/extracted)"
-#     )
-#     args = parser.parse_args()
-
-#     # Run recursive unzip
-#     results = recursive_unzip(args.zip_files, args.destination)
-#     print(json.dumps({"extracted_files": results}, indent=2))
