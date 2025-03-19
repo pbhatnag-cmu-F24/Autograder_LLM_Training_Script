@@ -1,29 +1,36 @@
-# Autograder_LLM_Training_Script## Project README
+# Autograder_Dataset_Processing_Pipeline
+
 To run the application, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-repo.git
+git clone https://github.com/pbhatnag-cmu-F24/Autograder_Dataset_Processing_Pipeline.git
 ```
 
 2. Change to the project directory:
 ```bash
-cd your-repo
+cd path/to/Autograder_Dataset_Processing_Pipeline
 ```
 
-3. Install the required dependencies:
+3. Create and activate a virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+4. Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Start the application:
+5. Start the application:
 ```bash
 python app.py
 ```
 
-5. Open your web browser and navigate to `http://localhost:5000` or use an API platform like Postman.
+6. Open your web browser and navigate to `http://localhost:5000` or use an API platform like Postman.
 
-6. Use the provided cURL commands to interact with the API.
+7. Use the provided cURL commands to interact with the API.
 
 This project utilizes the following cURL commands:
 
