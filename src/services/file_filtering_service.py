@@ -1,7 +1,7 @@
 import os
 import shutil
 
-copied_files = set()
+copied_files = {}
 
 def file_name_filter(source_folder, filter_list, filter_type):
     if not os.path.exists(source_folder):
@@ -28,7 +28,10 @@ def file_name_filter(source_folder, filter_list, filter_type):
                 # Remove the file
                 os.remove(file_path)
             else:
-                copied_files.add(file)
+                if file in copied_files:
+                    copied_files[file] += 1
+                else:
+                    copied_files[file] = 1
     return copied_files
 
 
@@ -64,7 +67,10 @@ def file_ext_filter(source_folder, filter_list, filter_type, dest_folder):
                 # Copy the file into the mirrored subdirectory
                 dest_file_path = os.path.join(dest_path, file)
                 # Create a set of all unique filenames which are copied
-                copied_files.add(file)
+                if file in copied_files:
+                    copied_files[file] += 1
+                else:
+                    copied_files[file] = 1
                 shutil.copy(file_path, dest_file_path)
     return copied_files
 

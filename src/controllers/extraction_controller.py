@@ -1,22 +1,44 @@
-from flask import Blueprint, request, jsonify
-from services.extraction_service import process_extraction
-from schemas.extraction_schemas import validate_json_request
+import sys
+from pathlib import Path
+from flask import Blueprint, request, jsonify, send_file
 
-extraction_bp = Blueprint("extraction", __name__)
+# Ensure the project root is in sys.path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-@extraction_bp.route("/extract", methods=["POST"])
-def extract_code():
+from src.services.extraction_service import extract_data_from_division
+
+# Hardcoded folders
+SOURCE_FOLDER = "data/file_filtered"
+DEST_FOLDER = "data/divisioned"
+DATASET_FILENAME = "dataset.jsonl"
+
+# Create a blueprint for dataset extraction endpoints
+dataset_extraction_bp = Blueprint("dataset_extraction_bp", __name__)
+
+@dataset_extraction_bp.route("/api/dataset/extraction", methods=["POST"])
+def dataset_extraction_controller():
     """
-    Handles the extraction request.
+    Creates a dataset by processing files from SOURCE_FOLDER.
+    The request JSON should include a "division" parameter (one of: "file", "line", "method", or "class").
+    The dataset is stored in DEST_FOLDER and returned as a downloadable file.
     """
     req_data = request.get_json()
+    if not req_data:
+        return jsonify({"error": "Missing JSON request body"}), 400
 
-    # Validate request
-    is_valid, error_response = validate_json_request(req_data)
-    if not is_valid:
-        return jsonify(error_response), 400
+    division = req_data.get("division")
+    if not division:
+        return jsonify({"error": "Missing 'division' parameter in request"}), 400
 
-    extract_data = req_data["extract"]
-    response_data = process_extraction(extract_data)
+    try:
+        dataset_file_path = extract_data_from_division(SOURCE_FOLDER, division, DEST_FOLDER)
+        dataset_file = Path(dataset_file_path)
 
-    return jsonify({"message": "Extraction successful", "data": response_data}), 200
+        if not dataset_file.exists():
+            return jsonify({"error": "Dataset file not found"}), 500
+
+        # Return the file as a downloadable response
+        return send_file(dataset_file, as_attachment=True, mimetype="application/jsonl")
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

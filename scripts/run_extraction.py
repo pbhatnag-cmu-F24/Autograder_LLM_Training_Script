@@ -1,38 +1,28 @@
-import argparse
+import sys
 import json
 from pathlib import Path
-from src.services.extraction_service import process_extraction
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+
+from src.services.extraction_service import extract_data_from_division
+
+# Add the project root to sys.path so that imports work correctly
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+# Constants for running the service
+SOURCE_FOLDER = "data/file_filtered"         # Folder containing the raw files to process
+DEST_FOLDER = "data/divisioned"     # Folder where dataset.jsonl will be stored
+DIVISION = "method"                  # "file" or "line" or "class" or "method"
 
 def main():
-    parser = argparse.ArgumentParser(description="Run Extraction Service to unzip code files.")
-    parser.add_argument(
-        "--zip-files", 
-        nargs="+", 
-        required=True, 
-        help="List of zip file paths to extract (e.g., --zip-files uploads/code.zip)"
-    )
-    args = parser.parse_args()
-
-    # Build the extraction request
-    extraction_request = {
-        "filter_out": [],  # add filters as needed
-        "file": [str(Path(z).resolve()) for z in args.zip_files],
-        "division": {
-            "file": True,
-            "method": True,
-            "class": True,
-            "line": True
-        },
-        "filters": {
-            "file_extension": {"include": [".py"], "exclude": []},
-            "filename": {"include": ["csv"], "exclude": []},
-            "method_name": {"include": ["csv"], "exclude": []},
-            "class_name": {"include": [], "exclude": []}
-        }
+    # Create the dataset by extracting data based on the chosen division
+    dataset_file_path = extract_data_from_division(SOURCE_FOLDER, DIVISION, DEST_FOLDER)
+    
+    # Print the output in JSON format
+    result = {
+        "message": "Dataset created successfully.",
+        "dataset_path": dataset_file_path
     }
-
-    # Process extraction using the service
-    result = process_extraction(extraction_request)
     print(json.dumps(result, indent=2))
 
 if __name__ == "__main__":

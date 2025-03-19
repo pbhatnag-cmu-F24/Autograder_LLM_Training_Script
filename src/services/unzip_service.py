@@ -60,7 +60,7 @@ def recursive_unzip(zip_files, destination):
         if nested_zip_files:
             # Recursively unzip any nested zip files 
             nested_extracted = recursive_unzip(nested_zip_files, destination_with_filename)
-            extracted_files.extend(nested_extracted)
+            # extracted_files.extend(nested_extracted)
 
     return extracted_files
 
