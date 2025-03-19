@@ -1,5 +1,4 @@
 # Autograder_Dataset_Processing_Pipeline
-```
 
 To run the application, follow these steps:
 
